@@ -1,3 +1,4 @@
 diesel 220 22000
 petrol 121 5999725
-octane 120 348908509
+octane 0 10
+octane 120 119985

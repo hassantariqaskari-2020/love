@@ -3,3 +3,6 @@
 [SALE] Fuel: petrol | Litres: 12 | Total: 1452
 [SALE] Fuel: diesel | Litres: 12 | Total: 1440
 [SALE] Fuel: petrol | Litres: 23 | Total: 2783
+[SALE] Fuel: octane | Litres: 1 | Total: 10
+[SALE] Fuel: octane | Litres: 15 | Total: 150
+[SALE] Fuel: octane | Litres: 15 | Total: 1800

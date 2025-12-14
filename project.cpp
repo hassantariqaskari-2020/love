@@ -1,7 +1,11 @@
 #include<iostream>
 #include<fstream>
 using namespace std;
+void roleSelection();
 void admin();
+void adminMENUE();
+void userMenu();
+void userLogin();
 void login();
 void registration();
 void forgot();
@@ -15,6 +19,41 @@ void systemLogs();
 void logoutFunction();
 void exitProgram();
 int main()
+{
+    roleSelection();
+    return 0;
+}
+void roleSelection()
+{
+    int role;
+    system("cls");
+    cout<<"|===============================================|\n";
+    cout<<"|          FUEL STATION MANAGEMENT SYSTEM       |\n";
+    cout<<"|===============================================|\n";
+    cout<<"|               SELECT ROLE                    |\n";
+    cout<<"|===============================================|\n";
+    cout<<"1) Admin\n";
+    cout<<"2) User\n";
+    cout<<"3) Exit\n";
+    cout<<"Enter choice: ";
+    cin>>role;
+    switch(role)
+    {
+        case 1:
+            adminMENUE();  
+            break;
+        case 2:
+            userLogin();  
+            break;
+        case 3:
+            exitProgram();
+            break;
+        default:
+            cout<<"Invalid choice.\n";
+            roleSelection();
+    }
+}
+void adminMENUE()
 {
     int c;
     cout<<"|===============================================|\n";
@@ -47,6 +86,117 @@ int main()
             break;
     }
 }
+void userLogin()
+{
+    string user, pass, u, p;
+    int found = 0;
+    system("cls");
+    cout<<"|===============================================|\n";
+    cout<<"|               USER LOGIN                     |\n";
+    cout<<"|===============================================|\n";
+    cout<<"Username: ";
+    cin>>user;
+    cout<<"Password: ";
+    cin>>pass;
+    ifstream fin("records.txt");
+    while(fin >> u >> p)
+    {
+        if(u == user && p == pass)
+        {
+            found = 1;
+            break;
+        }
+    }
+    fin.close();
+    if(found)
+    {
+        cout<<"\nLogin Successful!\n";
+        userMenu();
+    }
+    else
+    {
+        cout<<"\nInvalid Username or Password!\n";
+        roleSelection();
+    }
+}
+
+void userMenu()
+{
+    int choice;
+    while(true)
+    {
+        system("cls");
+        cout<<"|===============================================|\n";
+        cout<<"|               USER PANEL                     |\n";
+        cout<<"|===============================================|\n";
+        cout<<"1) Generate e-Receipt\n";
+        cout<<"2) Back\n";
+        cout<<"Enter choice: ";
+        cin>>choice;
+        if(choice == 1)
+        {
+            generateEReceipt();  
+        }
+        else if(choice == 2)
+        {
+            roleSelection();
+            break;
+        }
+        else
+        {
+            cout<<"Invalid choice.\n";
+        }
+    }
+}
+
+void admin()
+{
+        cout<<"|===============================================|\n";
+        cout<<"|              ADMIN DASHBOARD                 |\n";
+        cout<<"|===============================================|\n";
+        int option;
+        cout<<"1) Fuel Inventory Status\n";
+        cout<<"2) Record Fuel Sale\n";
+        cout<<"3) Generate e-Receipt (Text)\n";
+        cout<<"4) Update Fuel Prices\n";
+        cout<<"5) Staff Management\n";
+        cout<<"6) Daily Summary Report\n";
+        cout<<"7) System Logs\n";
+        cout<<"8) Logout\n";
+        cout<<"9) Exit Program\n";
+        cin>>option;
+        switch(option)
+        {
+            case 1:
+                fuelSystem();
+                break;
+            case 2:
+                recordFuelSale();
+                break;
+            case 3:
+                generateEReceipt();
+                break;
+            case 4:
+                updateFuelPrices();
+                break;
+                break;
+            case 5:
+                staffManagement();
+                break;
+            case 6:
+                dailyFuelSummary();
+                break;
+            case 7:
+                systemLogs();
+                break;
+            case 8:
+                logoutFunction();
+                break;
+            case 9:
+                exitProgram();
+                break;
+        }
+    }
 void login()
 {
     int count=0;
@@ -248,86 +398,95 @@ public:
 void staffManagement()
 {
     int choice;
-
-    do
+    while (true)
     {
-        cout<<"\n\n==============================\n";
-        cout<<"       STAFF MANAGEMENT\n";
-        cout<<"==============================\n";
-        cout<<"1. Add Staff\n";
-        cout<<"2. View Staff\n";
-        cout<<"3. Search Staff\n";
-        cout<<"4. Exit to Main Menu\n";
-        cout<<"Enter your choice: ";
-        cin>>choice;
-        if(choice==1)
+        cout << "\n\n==============================\n";
+        cout << "       STAFF MANAGEMENT\n";
+        cout << "==============================\n";
+        cout << "1. Add Staff\n";
+        cout << "2. View Staff\n";
+        cout << "3. Search Staff\n";
+        cout << "4. Exit to Main Menu\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+        cin.ignore();  
+        if (choice == 1)
         {
-        cout<<"\n\n==============================\n";
-        cout<<"        NEW STAFF DATA\n";
-        cout<<"==============================\n";
-            ofstream fout("staff.txt",ios::app);
+            ofstream fout("staff.txt", ios::app);
             Staff s;
-            cout<<"\nEnter Staff ID: ";
-            cin>>s.id;
+            cout << "\nEnter Staff ID: ";
+            cin >> s.id;
             cin.ignore();
-            cout<<"Enter Staff Name: ";
-            getline(cin,s.name);
-            cout<<"Enter Position: ";
-            getline(cin,s.position);
-            fout<<s.id<<" "<<s.name<<" "<<s.position<<"\n";
+            cout << "Enter Staff Name: ";
+            getline(cin, s.name);
+            cout << "Enter Position: ";
+            getline(cin, s.position);
+            // Safe 3-line write
+            fout << s.id << "\n"
+            << s.name << "\n"
+            << s.position << "\n"
+            << "---\n";
             fout.close();
-            cout<<"\nStaff added successfully!\n";
+            cout << "\nStaff added successfully!\n";
         }
-        else if(choice==2)
+        else if (choice == 2)
         {
             ifstream fin("staff.txt");
             Staff s;
-            cout<<"\n\n|===============================================|\n";
-            cout<<"                STAFF RECORDS\n";
-            cout<<"|===============================================|\n";
-            cout<<"ID\tName\t\tPosition\n";
-            cout<<"-----------------------------------------------\n";
-            while(fin>>s.id>>s.name>>s.position)
+            string separator;
+            cout << "\n\n|===============================================|\n";
+            cout << "                STAFF RECORDS\n";
+            cout << "|===============================================|\n";
+            cout << "ID\tName\t\tPosition\n";
+            cout << "-----------------------------------------------\n";
+            while (fin >> s.id)
             {
-                cout<<s.id<<"\t"<<s.name<<"\t\t"<<s.position<<endl;
+                fin.ignore();
+                getline(fin, s.name);
+                getline(fin, s.position);
+                getline(fin, separator);
+                cout << s.id << "\t" << s.name << "\t\t" << s.position << endl;
             }
             fin.close();
         }
-        else if(choice==3)
+        else if (choice == 3)
         {
             ifstream fin("staff.txt");
             Staff s;
             int searchID;
-            bool found=false;
-            cout<<"\nEnter Staff ID to search: ";
-            cin>>searchID;
-            while(fin>>s.id>>s.name>>s.position)
+            bool found = false;
+            string separator;
+            cout << "\nEnter Staff ID to search: ";
+            cin >> searchID;
+            while (fin >> s.id)
             {
-                if(s.id==searchID)
+                fin.ignore();
+                getline(fin, s.name);
+                getline(fin, s.position);
+                getline(fin, separator);
+                if (s.id == searchID)
                 {
-                    cout<<"\nRecord Found:\n";
-                    cout<<"ID: "<<s.id<<endl;
-                    cout<<"Name: "<<s.name<<endl;
-                    cout<<"Position: "<<s.position<<endl;
-                    found=true;
+                    cout << "\nRecord Found:\n";
+                    cout << "ID: " << s.id << endl;
+                    cout << "Name: " << s.name << endl;
+                    cout << "Position: " << s.position << endl;
+                    found = true;
                 }
             }
-            if(!found)
-                cout<<"No staff found with this ID.\n";
+            if (!found)
+                cout << "No staff found with this ID.\n";
             fin.close();
         }
-        else if(choice==4)
+        else if (choice == 4)
         {
-            system ("cls");
-            cout<<"Returning to main menu...\n";
-            admin();
+            cout << "Returning to main menu...\n";
+            return; 
         }
         else
         {
-            cout<<"Invalid choice! Try again.\n";
-            staffManagement();
+            cout << "Invalid choice! Try again.\n";
         }
-    }while(choice!=4);
+    }
 }
 class Fuel
 {
@@ -568,51 +727,3 @@ void updateFuelPrices()
             fout.close();
             cout<<"\nRecord Updated Successfully.\n\n";
 }
-void admin()
-{
-        cout<<"|===============================================|\n";
-        cout<<"|              ADMIN DASHBOARD                 |\n";
-        cout<<"|===============================================|\n";
-        int option;
-        cout<<"1) Fuel Inventory Status\n";
-        cout<<"2) Record Fuel Sale\n";
-        cout<<"3) Generate e-Receipt (Text)\n";
-        cout<<"4) Update Fuel Prices\n";
-        cout<<"5) Staff Management\n";
-        cout<<"6) Daily Summary Report\n";
-        cout<<"7) System Logs\n";
-        cout<<"8) Logout\n";
-        cout<<"9) Exit Program\n";
-        cin>>option;
-        switch(option)
-        {
-            case 1:
-                fuelSystem();
-                break;
-            case 2:
-                recordFuelSale();
-                break;
-            case 3:
-                generateEReceipt();
-                break;
-            case 4:
-                updateFuelPrices();
-                break;
-                break;
-            case 5:
-                staffManagement();
-                break;
-            case 6:
-                dailyFuelSummary();
-                break;
-            case 7:
-                systemLogs();
-                break;
-            case 8:
-                logoutFunction();
-                break;
-            case 9:
-                exitProgram();
-                break;
-        }
-    }
